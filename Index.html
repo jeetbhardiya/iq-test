@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Cognitive Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14213d;--ink2:#3d4a63;--muted:#6b7385;--line:#e4e1d8;--bg:#f6f4ef;--card:#fffefb;--accent:#0f766e;--accent-d:#0b5a54;--accent2:#e3f1ee;--warn:#9a4a07;--warnbg:#fcf1e2;--bad:#b42318;--good:#166534;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2rem,4.6vw,3.2rem)} h2{font-size:1.6rem} h3{font-size:1.15rem}
+p{margin:0 0 1em} a{color:var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:20;background:rgba(246,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.01em;cursor:pointer;color:var(--ink);text-decoration:none}
+.brand svg{width:26px;height:26px}
+.brand small{font-weight:500;color:var(--muted);font-size:.8rem}
+nav.main{margin-left:auto;display:flex;gap:4px}
+nav.main button{background:none;border:0;font:inherit;color:var(--ink2);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:.93rem}
+nav.main button:hover,nav.main button.on{background:#ebe8e0;color:var(--ink)}
+.testbar{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:.9rem;color:var(--ink2)}
+.timer{font-variant-numeric:tabular-nums;font-weight:600;background:var(--card);border:1px solid var(--line);padding:5px 11px;border-radius:999px;color:var(--ink)}
+.timer.low{color:var(--bad);border-color:#f3c3be;background:#fdf0ee}
+main{padding:36px 0 80px;min-height:calc(100vh - 140px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 .97rem Inter,sans-serif;border-radius:10px;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:background .15s,transform .05s;text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-d)}
+.btn.primary:disabled{background:#a9c7c3;cursor:not-allowed}
+.btn.ghost{background:var(--card);border-color:var(--line);color:var(--ink)}.btn.ghost:hover{background:#efece5}
+.btn.sm{padding:8px 14px;font-size:.88rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.74rem;font-weight:700;color:var(--accent)}
+.muted{color:var(--muted)} .small{font-size:.88rem}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center;margin-bottom:56px}
+@media(max-width:860px){.hero{grid-template-columns:1fr}}
+.hero p.lead{font-size:1.15rem;color:var(--ink2);max-width:36em}
+.stats{display:flex;gap:28px;margin:24px 0 28px;flex-wrap:wrap}
+.stats div b{display:block;font-family:Fraunces,serif;font-size:1.7rem}
+.stats div span{font-size:.85rem;color:var(--muted)}
+.domain{display:flex;gap:14px;align-items:flex-start}
+.domain .tag{flex:none;font:700 .72rem Inter;letter-spacing:.06em;background:var(--accent2);color:var(--accent-d);padding:5px 8px;border-radius:6px;margin-top:2px}
+.section-title{margin:56px 0 18px}
+.note{border-left:3px solid var(--warn);background:var(--warnbg);padding:14px 18px;border-radius:0 10px 10px 0;color:#5c3306;font-size:.93rem}
+.note.info{border-color:var(--accent);background:var(--accent2);color:#0b4440}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 18px 44px}
+ol.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+label.f{display:block;font-weight:600;font-size:.9rem;margin:0 0 6px}
+input.f,select.f{width:100%;font:inherit;padding:11px 13px;border:1px solid #d6d2c7;border-radius:10px;background:#fff;color:var(--ink)}
+input.f:focus,select.f:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.94rem;margin:10px 0;cursor:pointer}
+.check input{margin-top:4px;width:17px;height:17px;accent-color:var(--accent)}
+/* test */
+.testwrap{max-width:820px;margin:0 auto}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+.pill{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);font:600 .78rem Inter;color:var(--muted);cursor:pointer}
+.pill.ans{background:#dbe4ef;color:var(--ink);border-color:#c5d1e0}
+.pill.cur{outline:2px solid var(--ink);outline-offset:1px;color:var(--ink)}
+.pill.flag{box-shadow:inset 0 -3px 0 var(--warn)}
+.qprompt{font-size:1.12rem;margin:0 0 18px}
+.stem{display:flex;justify-content:center;margin:0 0 24px}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:0;width:min(330px,82vw);border:1.5px solid var(--ink);background:#fff}
+.matrix>div{aspect-ratio:1;border:1px solid #cfd4dd;display:grid;place-items:center}
+.matrix svg{width:100%;height:100%}
+.qmark{font:600 2.2rem Fraunces,serif;color:var(--accent)}
+.series{font:600 clamp(1.4rem,4vw,2.1rem) ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 30px}
+.figure{width:170px;height:170px;background:#fff;border:1.5px solid var(--ink);border-radius:12px}
+.opts-fig{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
+.opt{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .12s,background .12s;font:inherit;color:inherit;text-align:left}
+.opt:hover{border-color:#a7b2c3}
+.opt.sel{border-color:var(--accent);background:var(--accent2);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.opt .lt{position:absolute;top:7px;left:9px;font:700 .75rem Inter;color:var(--muted)}
+.opt.sel .lt{color:var(--accent-d)}
+.opts-fig .opt{aspect-ratio:1;padding:16px}
+.opts-fig .opt svg{width:100%;height:100%}
+.opts-txt{display:grid;gap:9px}
+.opts-txt .opt{display:flex;align-items:center;gap:14px;padding:13px 16px}
+.opts-txt .opt .lt{position:static;width:26px;height:26px;border-radius:7px;background:#efece4;display:grid;place-items:center;flex:none}
+.opts-txt .opt.sel .lt{background:var(--accent);color:#fff}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:10px;flex-wrap:wrap}
+.kbd{font:600 .75rem ui-monospace,monospace;border:1px solid #cfcabd;border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:#fff}
+.feedback{margin-top:16px;padding:12px 16px;border-radius:10px;font-weight:500}
+.feedback.ok{background:#e7f4ea;color:var(--good)}.feedback.no{background:#fdeceb;color:var(--bad)}
+.modal-bg{position:fixed;inset:0;background:rgba(20,33,61,.45);display:grid;place-items:center;z-index:50;padding:20px}
+.modal{background:var(--card);border-radius:16px;max-width:440px;width:100%;padding:26px}
+.bigdigit{font:600 7rem/1 Fraunces,serif;text-align:center;min-height:9rem;display:grid;place-items:center;color:var(--ink)}
+.ps-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 16px}
+.ps-row svg{width:52px;height:52px}
+.ps-sep{width:2px;height:56px;background:var(--ink);margin:0 10px}
+.ps-btns{display:flex;justify-content:center;gap:14px;margin-top:22px}
+.ps-btns .btn{min-width:150px;padding:16px 22px;font-size:1.05rem}
+.progressline{height:4px;background:#e6e2d8;border-radius:9px;overflow:hidden;margin-bottom:22px}
+.progressline i{display:block;height:100%;background:var(--accent);transition:width .3s}
+/* report */
+.rep-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.meta{display:grid;grid-template-columns:auto auto;gap:3px 16px;font-size:.88rem}
+.meta dt{color:var(--muted)}.meta dd{margin:0;font-weight:500}
+.score-hero{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:center}
+@media(max-width:760px){.score-hero{grid-template-columns:1fr}}
+.fsiq{font:600 5rem/1 Fraunces,serif;color:var(--ink)}
+.cls{display:inline-block;font-weight:700;font-size:.85rem;padding:5px 11px;border-radius:999px;background:var(--accent2);color:var(--accent-d)}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;padding:8px 10px;border-bottom:1.5px solid var(--ink)}
+table.t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t td.n{font-variant-numeric:tabular-nums}
+.ok-t{color:var(--good);font-weight:600}.no-t{color:var(--bad);font-weight:600}
+.chart svg{width:100%;height:auto;display:block}
+details.rev{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:10px}
+details.rev summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+details.rev summary::-webkit-details-marker{display:none}
+details.rev .in{padding:0 18px 16px;overflow-x:auto}
+.flags li{margin-bottom:6px}
+.badge{font-size:.75rem;font-weight:700;padding:3px 8px;border-radius:6px}
+.badge.v{background:#e7f4ea;color:var(--good)}.badge.c{background:var(--warnbg);color:var(--warn)}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.83rem}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:.9rem;z-index:60}
+@media print{
+ header.top,footer,.noprint{display:none!important}
+ body,html{background:#fff}
+ main{padding:0}
+ .card{border:1px solid #ccc;break-inside:avoid}
+ details.rev{break-inside:avoid}
+ details.rev .in{display:block}
+ .pb{break-before:page}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap" id="hdr"></div></header>
+<main><div class="wrap" id="app"></div></main>
+<footer><div class="wrap">Meridian Cognitive Assessment is an educational screening tool. It is not a clinical or diagnostic instrument and does not replace an individually administered assessment by a licensed psychologist. Item content is original; the test structure follows the publicly described five-factor model of modern adult intelligence batteries and public-domain ICAR item formats.</div></footer>
+
+<script>
+/* ========= utilities ========= */
+const app=()=>document.getElementById('app');
+const hdr=()=>document.getElementById('hdr');
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(arr,r){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const pick=(a,r)=>a[Math.floor(r()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const LT='ABCDEF';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtT=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+
+/* ========= figure rendering ========= */
+const FILLS=['#ffffff','#9aa6b8','#14213d'];
+const SH=['circle','square','triangle','diamond','pentagon','hexagon'];
+const POS={1:[[50,50]],2:[[29,50],[71,50]],3:[[50,28],[27,71],[73,71]],4:[[30,30],[70,30],[30,70],[70,70]]};
+const RAD={1:27,2:17,3:16,4:15};
+const LINES=[[10,50,90,50],[50,10,50,90],[17,17,83,83],[83,17,17,83],[14,11,86,11],[14,89,86,89]];
+function poly(n,cx,cy,r,off){const p=[];for(let k=0;k<n;k++){const a=(off+360*k/n)*Math.PI/180;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return p.join(' ')}
+function shapeSvg(sh,cx,cy,r,rot,fill){
+  const st=`fill="${FILLS[fill]}" stroke="#14213d" stroke-width="2.2" stroke-linejoin="round"`;
+  switch(sh){
+    case'circle':return`<circle cx="${cx}" cy="${cy}" r="${(r*.9).toFixed(1)}" ${st}/>`;
+    case'square':return`<polygon points="${poly(4,cx,cy,r,45)}" ${st}/>`;
+    case'triangle':return`<polygon points="${poly(3,cx,cy,r*1.08,-90)}" ${st}/>`;
+    case'diamond':return`<polygon points="${poly(4,cx,cy,r*1.05,-90)}" ${st}/>`;
+    case'pentagon':return`<polygon points="${poly(5,cx,cy,r,-90)}" ${st}/>`;
+    case'hexagon':return`<polygon points="${poly(6,cx,cy,r,0)}" ${st}/>`;
+    case'arrow':{const s=r/26;return`<g transform="translate(${cx},${cy}) rotate(${rot}) scale(${s.toFixed(3)})"><path d="M0,-26 L19,-3 L7,-3 L7,25 L-7,25 L-7,-3 L-19,-3 Z" fill="${FILLS[fill]}" stroke="#14213d" stroke-width="${(2.2/s).toFixed(2)}" stroke-linejoin="round"/></g>`}
+  }
+}
+function cellSvg(c){
+  let s='';
+  if(c.lines)LINES.forEach((l,i)=>{if(c.lines>>i&1)s+=`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}" stroke="#14213d" stroke-width="3.4" stroke-linecap="round"/>`});
+  if(c.shape){const r=RAD[c.count]*(c.size||1);POS[c.count].forEach(([x,y])=>s+=shapeSvg(c.shape,x,y,r,c.rot||0,c.fill||0))}
+  return`<svg viewBox="0 0 100 100" aria-hidden="true">${s}</svg>`;
+}
+
+/* ========= matrix item generator (rule-based, seeded) ========= */
+const mk=o=>Object.assign({shape:null,count:1,fill:0,rot:0,size:1,lines:0},o);
+const G=f=>[0,1,2].map(i=>[0,1,2].map(j=>f(i,j)));
+function norm(c){let rot=c.shape==='arrow'?((c.rot%360)+360)%360:0;return JSON.stringify(c.shape?[c.shape,c.count,c.fill,rot,c.size,c.lines]:[0,0,0,0,0,c.lines])}
+function bits(r,k,excl=0){const av=[0,1,2,3,4,5].filter(b=>!(excl>>b&1));return shuffle(av,r).slice(0,k).reduce((m,b)=>m|1<<b,0)}
+const bitList=m=>[0,1,2,3,4,5].filter(b=>m>>b&1);
+function lineItem(r,op){
+  const grid=[];
+  for(let i=0;i<3;i++){let a,b,c;
+    if(op==='or'){a=bits(r,2);b=bits(r,2,a);c=a|b}
+    else if(op==='xor'){a=bits(r,3);b=(1<<pick(bitList(a),r))|bits(r,2,a);c=a^b}
+    else{a=bits(r,4);const sh=shuffle(bitList(a),r).slice(0,2);b=sh.reduce((m,x)=>m|1<<x,0)|bits(r,1,a);c=a&~b}
+    grid.push([mk({lines:a}),mk({lines:b}),mk({lines:c})]);
+  }
+  return{play:['lines'],grid};
+}
+const MB=[
+  r=>{const s=shuffle(SH,r);const f=Math.floor(r()*3);return{play:['count','shape'],grid:G((i,j)=>mk({shape:s[i],count:j+1,fill:f}))}},
+  r=>{const s=shuffle(SH,r);return{play:['shape','fill'],grid:G((i,j)=>mk({shape:s[(i+j)%3],fill:j}))}},
+  r=>{const st=shuffle([0,45,90,135],r);return{play:['rot'],grid:G((i,j)=>mk({shape:'arrow',rot:st[i]+j*90,fill:2}))}},
+  r=>{const s=pick(SH,r);return{play:['count','fill'],grid:G((i,j)=>mk({shape:s,count:j+1,fill:i}))}},
+  r=>{const s=shuffle(SH,r);const f=shuffle([0,1,2],r);return{play:['shape','fill'],grid:G((i,j)=>mk({shape:s[(i+j)%3],fill:f[(i+2*j)%3]}))}},
+  r=>lineItem(r,'or'),
+  r=>{const st=shuffle([0,90,180,270],r);const c=shuffle([1,2,3],r);return{play:['rot','count'],grid:G((i,j)=>mk({shape:'arrow',rot:st[i]+j*45,count:c[(i+j)%3],fill:1}))}},
+  r=>lineItem(r,'xor'),
+  r=>{const s=shuffle(SH,r);const c=shuffle([1,2,3],r);return{play:['shape','count','fill'],grid:G((i,j)=>mk({shape:s[(i+j)%3],count:c[(i+2*j)%3],fill:i}))}},
+  r=>lineItem(r,'sub'),
+  r=>{const s=shuffle(SH,r);const f=shuffle([0,1,2],r);return{play:['size','shape','fill'],grid:G((i,j)=>mk({shape:s[(2*i+j)%3],size:[.55,.78,1][j],fill:f[i]}))}},
+  r=>{const it=lineItem(r,'xor');const s=shuffle(SH.filter(x=>x!=='hexagon'),r);const f=shuffle([0,1,2],r);it.grid.forEach((row,i)=>row.forEach((c,j)=>{c.shape=s[(i+j)%3];c.fill=f[(i+2*j)%3];c.size=.55}));it.play.push('shape','fill');return it}
+];
+function distractors(it,r){
+  const c=it.grid[2][2],seen=new Set([norm(c)]),out=[];
+  const add=x=>{const k=norm(x);if(!seen.has(k)&&(x.shape||x.lines)){seen.add(k);out.push(x)}};
+  shuffle([it.grid[2][1],it.grid[1][2],it.grid[2][0]].map(x=>({...x})),r).slice(0,2).forEach(add);
+  const m=[],P=it.play;
+  if(c.shape){
+    const used=[...new Set(it.grid.flat().map(x=>x.shape))];
+    used.concat(SH).forEach(s=>s!==c.shape&&m.push({...c,shape:s}));
+    [c.count-1,c.count+1].filter(n=>n>=1&&n<=4).forEach(n=>m.push({...c,count:n}));
+    [0,1,2].filter(f=>f!==c.fill).forEach(f=>m.push({...c,fill:f}));
+    if(c.shape==='arrow')[45,90,180,-45,-90].forEach(d=>m.push({...c,rot:c.rot+d}));
+    if(P.includes('size'))[.55,.78,1].filter(s=>s!==c.size).forEach(s=>m.push({...c,size:s}));
+  }
+  if(P.includes('lines')){for(let b=0;b<6;b++)m.push({...c,lines:c.lines^(1<<b)});const a=it.grid[2][0].lines,b=it.grid[2][1].lines;m.push({...c,lines:a|b},{...c,lines:a^b},{...c,lines:a&b})}
+  const inplay=m.filter(x=>P.some(p=>JSON.stringify(x[p])!==JSON.stringify(c[p])));
+  shuffle(inplay,r).forEach(x=>{if(out.length<5)add(x)});
+  shuffle(m,r).forEach(x=>{if(out.length<5)add(x)});
+  return out.slice(0,5);
+}
+function buildMatrix(k,seed){
+  const r=rng(seed);const it=MB[k](r);const ds=distractors(it,r);
+  const correct=it.grid[2][2];const opts=shuffle([correct,...ds],r);
+  const cells=it.grid.flat().map((c,n)=>n===8?`<div><span class="qmark">?</span></div>`:`<div>${cellSvg(c)}</div>`).join('');
+  return{stem:`<div class="matrix">${cells}</div>`,prompt:'Which option completes the pattern?',fig:true,opts:opts.map(cellSvg),a:opts.indexOf(correct)};
+}
+
+/* ========= mental rotation generator ========= */
+function normP(c){const mx=Math.min(...c.map(p=>p[0])),my=Math.min(...c.map(p=>p[1]));return c.map(([x,y])=>[x-mx,y-my]).sort((a,b)=>a[0]-b[0]||a[1]-b[1])}
+const keyP=c=>JSON.stringify(normP(c));
+const rot90=c=>normP(c.map(([x,y])=>[-y,x]));
+const mir=c=>normP(c.map(([x,y])=>[-x,y]));
+const rots=c=>{const o=[normP(c)];for(let i=0;i<3;i++)o.push(rot90(o[o.length-1]));return o};
+function polyomino(r,n){const cells=[[0,0]];const has=(x,y)=>cells.some(c=>c[0]===x&&c[1]===y);while(cells.length<n){const[x,y]=pick(cells,r);const d=pick([[1,0],[-1,0],[0,1],[0,-1]],r);if(!has(x+d[0],y+d[1]))cells.push([x+d[0],y+d[1]])}return normP(cells)}
+function goodShape(c){const R=rots(c).map(keyP);if(new Set(R).size<4)return false;const w=Math.max(...c.map(p=>p[0]))+1,h=Math.max(...c.map(p=>p[1]))+1;if(w<2||h<2)return false;return!rots(mir(c)).map(keyP).some(k=>R.includes(k))}
+function polySvg(c,ang=0){
+  const w=Math.max(...c.map(p=>p[0]))+1,h=Math.max(...c.map(p=>p[1]))+1;const s=66/Math.max(w,h);const ox=50-w*s/2,oy=50-h*s/2;
+  const rects=c.map(([x,y])=>`<rect x="${(ox+x*s).toFixed(1)}" y="${(oy+y*s).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" fill="#14213d" stroke="#fff" stroke-width="1.6"/>`).join('');
+  const[mx,my]=c[0];const dot=`<circle cx="${(ox+(mx+.5)*s).toFixed(1)}" cy="${(oy+(my+.5)*s).toFixed(1)}" r="${(s*.2).toFixed(1)}" fill="#f2b84b"/>`;
+  return`<svg viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(${ang} 50 50)">${rects}${dot}</g></svg>`;
+}
+/* the dot marks one cell so shapes stay distinct; it rotates/mirrors with the shape */
+function markCell(c){return c}
+function buildRotation(k,seed){
+  const r=rng(seed);const n=[5,5,6,6,6,7,7,7,8,8,9,9][k]||6;let c;
+  do{c=polyomino(r,n)}while(!goodShape(c));
+  // mark: keep first cell of normalized original as marker; track through transforms by tagging
+  const tag=c.map((p,i)=>[p[0],p[1],i===0?1:0]);
+  const T=(cells,f)=>{const t=cells.map(([x,y,m])=>{const[a,b]=f(x,y);return[a,b,m]});const mx=Math.min(...t.map(p=>p[0])),my=Math.min(...t.map(p=>p[1]));return t.map(([x,y,m])=>[x-mx,y-my,m])};
+  const R1=(x,y)=>[-y,x],M=(x,y)=>[-x,y];
+  const rotN=(cells,q)=>{let o=cells;for(let i=0;i<q;i++)o=T(o,R1);return o};
+  const toSvg=(cells,ang)=>{const pts=cells.slice().sort((a,b)=>b[2]-a[2]);return polySvg(pts.map(p=>[p[0],p[1]]),ang)};
+  const extra=k<4?[0]:[0,30,-30,45,-45,60,-60,135];
+  const q=1+Math.floor(r()*3);
+  const correct=toSvg(rotN(tag,q),pick(extra,r));
+  const mirrored=T(tag,M);
+  const ds=[0,1,2,3].map(qq=>toSvg(rotN(mirrored,qq),pick(extra,r)));
+  const all=shuffle([correct,...ds],r);
+  return{stem:`<div class="figure">${toSvg(tag,0)}</div>`,prompt:'Which option is the <b>same shape</b> as the one above, only rotated? The other four are mirror images.',fig:true,opts:all,a:all.indexOf(correct)};
+}
+
+/* ========= item banks (original content) ========= */
+const VERBAL=[
+ {p:'<b>Glove</b> is to <b>hand</b> as <b>sock</b> is to…',o:['shoe','foot','knee','wool','leg'],a:1},
+ {p:'Which word does <b>not</b> belong with the others?',o:['violin','cello','flute','viola','double bass'],a:2},
+ {p:'Choose the word closest in meaning to <b>CANDID</b>.',o:['frank','sweet','hidden','cautious','polite'],a:0},
+ {p:'<b>Thermometer</b> is to <b>temperature</b> as <b>odometer</b> is to…',o:['speed','fuel','distance','time','pressure'],a:2},
+ {p:'Tom is taller than Ana. Ana is taller than Raj. Raj is taller than Lee. Who is the second shortest?',o:['Tom','Ana','Raj','Lee','Cannot be determined'],a:2},
+ {p:'Choose the word most nearly <b>opposite</b> in meaning to <b>BENEVOLENT</b>.',o:['generous','malicious','neutral','timid','wealthy'],a:1},
+ {p:'Which word does <b>not</b> belong with the others?',o:['granite','basalt','marble','bronze','slate'],a:3},
+ {p:'<b>Archipelago</b> is to <b>island</b> as <b>constellation</b> is to…',o:['planet','galaxy','star','sky','orbit'],a:2},
+ {p:'If two days from now will be Sunday, what day comes right after the day before yesterday?',o:['Tuesday','Wednesday','Thursday','Friday','Saturday'],a:2},
+ {p:'Choose the word closest in meaning to <b>EPHEMERAL</b>.',o:['eternal','ethereal','fleeting','fragile','transparent'],a:2},
+ {p:'Some doctors are writers. All writers are readers. Which statement <b>must</b> be true?',o:['All doctors are readers','Some doctors are readers','All readers are writers','No writers are doctors','Some readers are not doctors'],a:1},
+ {p:'<b>Prologue</b> is to <b>epilogue</b> as <b>preface</b> is to…',o:['foreword','chapter','index','afterword','appendix'],a:3},
+ {p:'Choose the word closest in meaning to <b>OBFUSCATE</b>.',o:['clarify','obscure','delay','accuse','imitate'],a:1},
+ {p:'A person with deep knowledge across many different subjects is best described as a…',o:['polyglot','philanthropist','polymath','pedant','prodigy'],a:2},
+ {p:'<b>Ubiquitous</b> is to <b>rare</b> as <b>verbose</b> is to…',o:['wordy','terse','loud','common','clear'],a:1},
+ {p:'No reptiles are mammals. Some pets are reptiles. Which statement <b>must</b> be true?',o:['No pets are mammals','Some pets are not mammals','All mammals are pets','Some mammals are reptiles','Some pets are mammals'],a:1}
+];
+const SERIES=[
+ {s:'2, 4, 6, 8, ?',o:['9','10','12','14','16'],a:1},
+ {s:'3, 6, 12, 24, ?',o:['30','36','42','48','54'],a:3},
+ {s:'A, C, E, G, ?',o:['H','I','J','K','F'],a:1},
+ {s:'1, 4, 9, 16, 25, ?',o:['30','34','36','49','32'],a:2},
+ {s:'2, 3, 5, 8, 12, ?',o:['15','16','17','18','20'],a:2},
+ {s:'1, 1, 2, 3, 5, 8, ?',o:['11','12','13','14','16'],a:2},
+ {s:'B, E, D, G, F, ?',o:['H','I','J','E','K'],a:1},
+ {s:'4, 9, 19, 39, ?',o:['59','78','79','80','81'],a:2},
+ {s:'3, 5, 9, 17, 33, ?',o:['49','64','65','66','67'],a:2},
+ {s:'Z, X, U, Q, ?',o:['M','L','N','K','O'],a:1},
+ {s:'2, 6, 7, 21, 22, 66, ?',o:['67','68','132','198','69'],a:0},
+ {s:'1, 2, 6, 24, 120, ?',o:['240','600','720','840','144'],a:2}
+];
+const txtItem=(prompt,opts,a,stem='')=>({stem,prompt,fig:false,opts:opts.map(esc),a});
+const ITEMS={
+  verbal:VERBAL.map(v=>txtItem(v.p,v.o,v.a)),
+  matrix:MB.map((_,k)=>buildMatrix(k,1009+k*7919)),
+  series:SERIES.map(v=>txtItem('What comes next in the series?',v.o,v.a,`<div class="series">${esc(v.s)}</div>`)),
+  rotation:Array.from({length:12},(_,k)=>buildRotation(k,4242+k*104729))
+};
+const PRACTICE={
+  verbal:txtItem('<b>Hot</b> is to <b>cold</b> as <b>up</b> is to…',['high','down','top','over'],1),
+  matrix:buildMatrix(0,77),
+  series:txtItem('What comes next in the series?',['5','6','8','10'],0,'<div class="series">1, 2, 3, 4, ?</div>'),
+  rotation:(()=>{const it=buildRotation(0,991);return it})()
+};
+
+/* ========= sections & norms ========= */
+const SECTIONS=[
+ {id:'verbal',name:'Verbal Reasoning',idx:'VCI',type:'mc',time:480,
+  measures:'Word knowledge, verbal concept formation and verbal logic. This mirrors the Similarities and Vocabulary tasks used in the Verbal Comprehension domain of adult intelligence scales, plus ICAR-style verbal reasoning.',
+  how:'Read each question and choose the best answer. Some questions are analogies, some ask which word does not belong, some are short logic puzzles.'},
+ {id:'matrix',name:'Matrix Reasoning',idx:'FRI',type:'mc',time:600,
+  measures:'Fluid reasoning: spotting abstract rules in new problems without relying on learned knowledge. This is the classic Raven-style progressive matrix format.',
+  how:'Each puzzle is a 3 × 3 grid with the bottom-right cell missing. Work out the rules across rows and down columns, then pick the option that completes the grid. Puzzles get harder as you go.'},
+ {id:'series',name:'Number & Letter Series',idx:'FRI',type:'mc',time:420,
+  measures:'Quantitative and inductive reasoning, similar to ICAR Letter and Number Series items and the quantitative strand of fluid reasoning.',
+  how:'Find the rule that generates each sequence and choose what comes next. Please work it out in your head: no calculators.'},
+ {id:'rotation',name:'Spatial Rotation',idx:'VSI',type:'mc',time:420,
+  measures:'Visual-spatial ability: holding a shape in mind and rotating it mentally, the skill behind Visual Puzzles and Block Design-type tasks.',
+  how:'You will see one shape. Exactly one option is the same shape turned around; the other four are mirror images (flipped). The small gold dot turns with the shape and can help you track it.'},
+ {id:'wm',name:'Digit Span',idx:'WMI',type:'wm',
+  measures:'Working memory: holding and manipulating information over a few seconds. Digit Span forward and backward is one of the oldest and most reliable working memory tasks in clinical batteries.',
+  how:'Digits appear one at a time. In Part A type them in the same order. In Part B type them in reverse order. Sequences get longer until two attempts at the same length are missed. Do not write anything down.'},
+ {id:'ps',name:'Symbol Search',idx:'PSI',type:'ps',time:120,
+  measures:'Processing speed: how quickly and accurately you scan and compare simple visual information.',
+  how:'Two target symbols appear on the left. Decide as quickly as you can whether either target appears in the group on the right. Press Y or ← for Yes, N or → for No. You have 2 minutes; work fast but accurately, since errors are subtracted.'}
+];
+/* Provisional reference parameters (adult raw-score mean/SD). Replace with local norms once calibration data exist. */
+const NORMS={verbal:{m:9.5,sd:3.2,n:16},matrix:{m:6.5,sd:2.7,n:12},series:{m:7.2,sd:2.5,n:12},rotation:{m:6.5,sd:3.0,n:12},wm:{m:15.5,sd:3.6,n:28},ps:{m:36,sd:9}};
+const INDEX_INFO={
+ FSIQ:{name:'Full Scale IQ',desc:'Overall estimate of general intellectual ability, combining all six subtests.'},
+ VCI:{name:'Verbal Comprehension',desc:'Acquired word knowledge and the ability to reason with verbal concepts.'},
+ FRI:{name:'Fluid Reasoning',desc:'Solving novel problems by detecting and applying abstract rules.'},
+ VSI:{name:'Visual Spatial',desc:'Perceiving, holding and mentally transforming visual shapes.'},
+ WMI:{name:'Working Memory',desc:'Holding information in mind briefly and manipulating it.'},
+ PSI:{name:'Processing Speed',desc:'Speed and accuracy of simple visual scanning and decision making.'},
+ NVI:{name:'Nonverbal IQ',desc:'Overall estimate of ability without language: matrices, series, rotation, digit span and symbol search.'},
+ GAI:{name:'General Ability Index',desc:'Reasoning ability with less influence from memory and speed (VCI, FRI, VSI).'},
+ CPI:{name:'Cognitive Proficiency Index',desc:'Efficiency of information processing (WMI and PSI).'}
+};
+const REL={FSIQ:.92,NVI:.91,GAI:.90,CPI:.85,VCI:.84,FRI:.86,VSI:.82,WMI:.85,PSI:.80};
+
+/* ========= state ========= */
+let S=null,KEY=null,TIMER=null,VIEW='home';
+function fresh(user){return{user,started:Date.now(),resp:{},secTime:{},wm:{fwd:[],bwd:[]},ps:{trials:[],correct:0,errors:0},flags:{tab:0},active:true,seq:0}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S&&S.active)S.flags.tab++});
+window.addEventListener('beforeunload',e=>{if(S&&S.active){e.preventDefault();e.returnValue=''}});
+document.addEventListener('keydown',e=>{if(KEY&&!e.metaKey&&!e.ctrlKey&&!e.altKey)KEY(e)});
+
+/* ========= header ========= */
+const LOGO=`<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#14213d"/><path d="M7 21 L12 11 L16 18 L20 11 L25 21" fill="none" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function navHeader(){
+  hdr().innerHTML=`<a class="brand" onclick="go('home')">${LOGO}<span>Meridian <small>Cognitive Assessment</small></span></a>
+  <nav class="main"><button class="${VIEW==='home'?'on':''}" onclick="go('home')">Overview</button><button class="${VIEW==='method'?'on':''}" onclick="go('method')">Methodology</button><button class="${VIEW==='history'?'on':''}" onclick="go('history')">My results</button></nav>`;
+}
+function testHeader(sec,k){
+  hdr().innerHTML=`<span class="brand">${LOGO}<span>Meridian</span></span>
+  <div class="testbar"><span>Part ${partNo(k)+1} of ${activeList().length} · <b>${sec.name}</b></span><span class="timer" id="tmr">${sec.time?fmtT(sec.time*1000):'Untimed'}</span></div>`;
+}
+function go(v){if(S&&S.active){if(!confirmLeave())return}VIEW=v;KEY=null;stopTimer();navHeader();({home:renderHome,method:renderMethod,history:renderHistory,intake:renderIntake}[v])();window.scrollTo(0,0)}
+function confirmLeave(){ /* custom confirm not possible synchronously; block navigation during test */ toast('Finish or abandon the current test first.');return false}
+function abandon(){modal(`<h3>Abandon this test?</h3><p class="muted">Your answers so far will be discarded.</p>`,[['Keep going',null],['Abandon','danger']],b=>{if(b===1){S.active=false;S=null;stopTimer();go('home')}})}
+
+function modal(html,buttons,cb){
+  const bg=document.createElement('div');bg.className='modal-bg';
+  bg.innerHTML=`<div class="modal" role="dialog">${html}<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">${buttons.map((b,i)=>`<button class="btn ${b[1]==='danger'?'primary':i===buttons.length-1?'primary':'ghost'} sm" data-i="${i}">${b[0]}</button>`).join('')}</div></div>`;
+  bg.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{bg.remove();cb&&cb(+btn.dataset.i)});
+  document.body.appendChild(bg);
+}
+
+/* ========= home ========= */
+function renderHome(){
+  app().innerHTML=`
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Adult cognitive ability assessment · ages 16+</div>
+      <h1>A structured, five-domain estimate of your cognitive ability.</h1>
+      <p class="lead">Six timed subtests modelled on how modern clinical batteries are organised: verbal comprehension, fluid reasoning, visual-spatial ability, working memory and processing speed. You get a full report with index scores, confidence intervals and a strengths profile.</p>
+      <div class="stats"><div><b>6</b><span>subtests</span></div><div><b>~40</b><span>minutes</span></div><div><b>5 + 3</b><span>index &amp; composite scores</span></div></div>
+      <button class="btn primary" onclick="go('intake')">Begin assessment</button>
+      <button class="btn ghost" onclick="go('method')" style="margin-left:8px">How it works</button>
+    </div>
+    <div class="card" style="padding:18px">
+      <div class="matrix" style="width:100%;max-width:300px;margin:0 auto">${ITEMS.matrix[4].stem.replace(/^<div class="matrix">|<\/div>$/g,'')}</div>
+      <p class="small muted" style="text-align:center;margin:12px 0 0">A sample matrix reasoning item</p>
+    </div>
+  </section>
+
+  <h2 class="section-title">What the assessment measures</h2>
+  <div class="grid g2">
+    ${SECTIONS.map((s,i)=>`<div class="card domain"><span class="tag">${s.idx}</span><div><h3>${i+1}. ${s.name}</h3><p class="muted small" style="margin:0">${s.measures}</p></div></div>`).join('')}
+  </div>
+
+  <h2 class="section-title">How it works</h2>
+  <div class="grid g2">
+    <div class="card"><ol class="steps">
+      <li><b>Set up.</b> Find a quiet place, about 45 minutes, and a desktop or tablet. No calculators, notes or help. Not comfortable in English? Choose the language-free version, which skips the verbal section.</li>
+      <li><b>Practice first.</b> Every subtest opens with instructions and an unscored practice item with feedback, the same way examiners teach each task.</li>
+      <li><b>Timed subtests.</b> Each section has its own time limit. You can move back and forth and flag items inside a section.</li>
+      <li><b>Your report.</b> Scores are converted to standard scores (mean 100, SD 15), with 95% confidence intervals, percentiles and descriptive ranges.</li>
+    </ol></div>
+    <div class="card">
+      <h3>Scores in your report</h3>
+      <table class="t"><tr><th>Score</th><th>Built from</th></tr>
+      <tr><td>Full Scale IQ</td><td>All six subtests</td></tr>
+      <tr><td>Nonverbal IQ</td><td>Everything except verbal reasoning</td></tr>
+      <tr><td>General Ability Index</td><td>Verbal, matrices, series, rotation</td></tr>
+      <tr><td>Cognitive Proficiency</td><td>Digit span, symbol search</td></tr>
+      <tr><td>Five index scores</td><td>VCI · FRI · VSI · WMI · PSI</td></tr>
+      <tr><td>Subtest scaled scores</td><td>Mean 10, SD 3</td></tr></table>
+    </div>
+  </div>
+
+  <h2 class="section-title">Before you start</h2>
+  <div class="note">This is an <b>educational screening tool</b>, not a clinical assessment. Clinical IQ tests are administered one-to-one by a qualified psychologist and scored against large, stratified national norm samples. Meridian uses provisional reference parameters, so treat the scores as an informed estimate. Never use them alone for diagnosis, educational placement, hiring or legal decisions.</div>`;
+}
+
+/* ========= methodology ========= */
+function renderMethod(){
+  app().innerHTML=`<div style="max-width:760px">
+  <div class="eyebrow">Methodology</div><h1>How Meridian is built</h1>
+  <p class="lead muted" style="font-size:1.1rem">Meridian borrows the parts of professional practice that can be reproduced honestly online: a multi-domain structure, standardised instructions, practice items, time limits, standard-score scaling and transparent uncertainty.</p>
+
+  <h2 class="section-title">1. Structure: five cognitive domains</h2>
+  <p>Current adult batteries such as the WAIS-5 organise ability into five broad domains: Verbal Comprehension, Visual Spatial, Fluid Reasoning, Working Memory and Processing Speed. These sit beneath a general factor (g), consistent with Cattell-Horn-Carroll (CHC) theory. Meridian uses one or two subtests per domain so that a Full Scale estimate draws on all five.</p>
+  <table class="t"><tr><th>Domain</th><th>Clinical analogue</th><th>Meridian subtest</th></tr>
+  <tr><td>Verbal Comprehension</td><td>Similarities, Vocabulary</td><td>Verbal Reasoning (16)</td></tr>
+  <tr><td>Fluid Reasoning</td><td>Matrix Reasoning, Figure Weights</td><td>Matrix Reasoning (12), Number &amp; Letter Series (12)</td></tr>
+  <tr><td>Visual Spatial</td><td>Block Design, Visual Puzzles</td><td>Spatial Rotation (12)</td></tr>
+  <tr><td>Working Memory</td><td>Digit Span</td><td>Digit Span forward + backward (up to 28 trials)</td></tr>
+  <tr><td>Processing Speed</td><td>Symbol Search, Coding</td><td>Symbol Search (2 min)</td></tr></table>
+
+  <h2 class="section-title">Language-free version</h2>
+  <p>Verbal subtests measure English as well as reasoning. Test-takers who say they are not very fluent in English skip Verbal Reasoning automatically, and anyone else can choose to. Their headline score is a <b>Nonverbal IQ</b> built from the other five subtests. This follows the WAIS-5 Nonverbal Index, which leaves out Verbal Comprehension, and the reasoning behind language-free tests such as Raven's Progressive Matrices. Anyone who takes the full test gets both scores.</p>
+
+  <h2 class="section-title">2. Item design</h2>
+  <p>All item content is original. Formats follow the International Cognitive Ability Resource (ICAR), a public-domain project from Northwestern University whose letter/number series, matrix reasoning, verbal reasoning and rotation item types were validated online with large samples. Matrix items are generated from explicit rules (progression, Latin-square distribution, overlay union, exclusive-or and subtraction), and every distractor breaks at least one rule, so each item has exactly one defensible answer. Rotation items use asymmetric shapes whose mirror images can never be reached by rotation.</p>
+
+  <h2 class="section-title">3. Administration</h2>
+  <ul><li>Standardised written instructions and a practice item with feedback before every subtest.</li>
+  <li>Items ordered from easy to hard within each subtest.</li>
+  <li>Section time limits; Digit Span uses a discontinue rule (stop after two failed trials at one length), as clinical span tasks do.</li>
+  <li>Behaviour monitoring: tab switches, rapid responding and omissions feed a validity check in the report.</li></ul>
+
+  <h2 class="section-title">4. Scoring</h2>
+  <p>Raw scores become z-scores against reference parameters, then <b>scaled scores</b> (mean 10, SD 3) for subtests and <b>standard scores</b> (mean 100, SD 15) for indices. Composites (FSIQ, GAI, CPI, FRI) use the standard composite formula: the summed z-scores divided by √(k + k(k−1)·r̄), where r̄ is the average intercorrelation. This is why composite scores are more extreme than a simple average of their parts. Confidence intervals are ±1.96 standard errors of measurement, where SEM = 15·√(1 − reliability).</p>
+  <table class="t"><tr><th>Standard score</th><th>Descriptor</th><th>Approx. population</th></tr>
+  <tr><td>130 and above</td><td>Extremely High</td><td>2.2%</td></tr><tr><td>120–129</td><td>Very High</td><td>6.7%</td></tr>
+  <tr><td>110–119</td><td>High Average</td><td>16.1%</td></tr><tr><td>90–109</td><td>Average</td><td>50%</td></tr>
+  <tr><td>80–89</td><td>Low Average</td><td>16.1%</td></tr><tr><td>70–79</td><td>Very Low</td><td>6.7%</td></tr><tr><td>Below 70</td><td>Extremely Low</td><td>2.2%</td></tr></table>
+
+  <h2 class="section-title">5. Limits, stated plainly</h2>
+  <div class="note"><b>The norms are provisional.</b> The reference means and SDs are expert estimates for a general adult population, not values from a stratified standardisation sample. Before using Meridian for anything consequential, collect data from a few hundred representative test-takers and replace the <code>NORMS</code> table in the source. Scores also do not adjust for age, language background or disability, and unproctored online testing cannot rule out help or distraction. A clinical diagnosis (for example of intellectual disability or giftedness) needs a licensed psychologist and an instrument such as WAIS-5 or Stanford-Binet 5.</div>
+  <p style="margin-top:28px"><button class="btn primary" onclick="go('intake')">Begin assessment</button></p>
+  </div>`;
+}
+
+/* ========= intake ========= */
+function renderIntake(){
+  app().innerHTML=`<div style="max-width:620px;margin:0 auto">
+  <div class="eyebrow">Step 1 of 2</div><h1 style="font-size:2.1rem">Before you begin</h1>
+  <div class="card">
+    <div class="grid g2" style="margin-bottom:14px">
+      <div><label class="f" for="nm">Name for report <span class="muted">(optional)</span></label><input class="f" id="nm" maxlength="60" placeholder="e.g. Priya S."></div>
+      <div><label class="f" for="ag">Age</label><input class="f" id="ag" type="number" min="16" max="99" inputmode="numeric" placeholder="16 or older"></div>
+    </div>
+    <label class="f" for="lang">How comfortable are you with English?</label>
+    <select class="f" id="lang"><option value="yes">It's my first or strongest language</option><option value="no">I'm fluent, but it's a second language</option><option value="low">I'm not very fluent in English</option></select>
+    <label class="check" style="margin-top:12px"><input type="checkbox" id="skipv"> <span>Take the <b>language-free version</b> (skip Verbal Reasoning). You'll get a Nonverbal IQ instead of a Full Scale IQ.</span></label>
+    <p id="skipnote" class="small" style="color:var(--accent-d);margin:0 0 4px;display:none">The verbal section will be skipped so that your English level doesn't affect your score.</p>
+    <h3 style="margin-top:22px">Testing conditions</h3>
+    <label class="check"><input type="checkbox" class="cond"> I'm in a quiet place and can give about 45 minutes of uninterrupted attention.</label>
+    <label class="check"><input type="checkbox" class="cond"> I won't use calculators, notes, search or anyone's help.</label>
+    <label class="check"><input type="checkbox" class="cond"> I understand this is an educational estimate, not a clinical diagnosis.</label>
+    <p id="err" class="small" style="color:var(--bad);min-height:1.2em;margin:8px 0 0"></p>
+    <button class="btn primary" id="go" style="width:100%;margin-top:6px">Start Part 1</button>
+  </div></div>`;
+  const lang=document.getElementById('lang'),sv=document.getElementById('skipv'),sn=document.getElementById('skipnote');
+  lang.onchange=()=>{const low=lang.value==='low';sv.disabled=low;if(low)sv.checked=true;sn.style.display=low?'block':'none'};
+  document.getElementById('go').onclick=()=>{
+    const age=+document.getElementById('ag').value;
+    if(!(age>=16&&age<=99)){document.getElementById('err').textContent='Please enter an age between 16 and 99.';return}
+    if([...document.querySelectorAll('.cond')].some(c=>!c.checked)){document.getElementById('err').textContent='Please confirm all three testing conditions.';return}
+    S=fresh({name:document.getElementById('nm').value.trim(),age,lang:lang.value});
+    S.skipVerbal=lang.value==='low'||sv.checked;
+    sectionIntro(firstFrom(0));
+  };
+}
+
+/* ========= section flow ========= */
+function stopTimer(){if(TIMER){clearInterval(TIMER);TIMER=null}}
+function startTimer(end,onEnd){stopTimer();TIMER=setInterval(()=>{const left=end-Date.now();const el=document.getElementById('tmr');if(el){el.textContent=fmtT(Math.max(0,left));el.classList.toggle('low',left<60000)}if(left<=0){stopTimer();onEnd()}},250)}
+function sectionIntro(k){
+  KEY=null;stopTimer();const sec=SECTIONS[k];testHeader(sec,k);
+  const n=sec.type==='mc'?ITEMS[sec.id].length:sec.type==='wm'?'2 parts':'2 minutes';
+  app().innerHTML=`<div class="testwrap">
+    <div class="progressline"><i style="width:${partNo(k)/activeList().length*100}%"></i></div>
+    ${partNo(k)>0?`<p class="small muted">✓ Part ${partNo(k)} complete.</p>`:''}
+    <div class="eyebrow">Part ${partNo(k)+1} ·${INDEX_INFO[sec.idx].name}</div>
+    <h1 style="font-size:2.2rem">${sec.name}</h1>
+    <div class="card"><p><b>What it measures.</b> ${sec.measures}</p><p><b>Instructions.</b> ${sec.how}</p>
+    <p class="muted small" style="margin:0">${sec.type==='mc'?`${n} items · ${sec.time/60} minute limit · use keys <span class="kbd">1</span>–<span class="kbd">6</span> to choose and <span class="kbd">Enter</span> for next`:sec.type==='wm'?'Untimed · about 5 minutes':'2 minute limit'}</p></div>
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap"><button class="btn primary" id="pr">Try a practice item</button><button class="btn ghost" onclick="abandon()">Abandon test</button></div>
+  </div>`;
+  document.getElementById('pr').onclick=()=>{sec.type==='mc'?practiceMC(k):sec.type==='wm'?wmIntro(k):psPractice(k)};
+}
+
+/* ---- multiple choice ---- */
+function optsHtml(it,sel){
+  return it.fig?`<div class="opts-fig">${it.opts.map((o,j)=>`<button class="opt ${sel===j?'sel':''}" data-j="${j}" aria-label="Option ${LT[j]}"><span class="lt">${LT[j]}</span>${o}</button>`).join('')}</div>`
+  :`<div class="opts-txt">${it.opts.map((o,j)=>`<button class="opt ${sel===j?'sel':''}" data-j="${j}"><span class="lt">${LT[j]}</span>${o}</button>`).join('')}</div>`;
+}
+function practiceMC(k){
+  const sec=SECTIONS[k],it=PRACTICE[sec.id];let sel=null,done=false;
+  const draw=()=>{
+    app().innerHTML=`<div class="testwrap"><div class="eyebrow">Practice item · not scored</div>
+    <p class="qprompt" style="margin-top:8px">${it.prompt}</p>${it.stem?`<div class="stem">${it.stem}</div>`:''}${optsHtml(it,sel)}
+    <div id="fb"></div><div class="qnav"><span></span><button class="btn primary" id="chk" ${sel===null?'disabled':''}>${done?'Start timed section':'Check answer'}</button></div></div>`;
+    app().querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(done)return;sel=+b.dataset.j;draw()});
+    if(done)showFb();
+    document.getElementById('chk').onclick=()=>{if(!done){done=true;draw()}else startMC(k)};
+  };
+  const showFb=()=>{const ok=sel===it.a;document.getElementById('fb').innerHTML=`<div class="feedback ${ok?'ok':'no'}">${ok?'Correct.':'Not quite. The answer is '+LT[it.a]+'.'} ${explain(sec.id)}</div>`};
+  KEY=e=>{const n=keyIdx(e,it.opts.length);if(n!==null&&!done){sel=n;draw()}else if(e.key==='Enter'&&sel!==null)document.getElementById('chk').click()};
+  draw();
+}
+function explain(id){return{verbal:'Hot and cold are opposites, so the opposite of up is down.',matrix:'Each row keeps one shape, and the number of shapes increases by one from left to right.',series:'Each number is one more than the one before it.',rotation:'Imagine turning the options on the page. A mirror image can only be matched by flipping it over, which is not allowed.'}[id]}
+function keyIdx(e,n){let v=null;if(/^[1-6]$/.test(e.key))v=+e.key-1;else if(/^[a-fA-F]$/.test(e.key))v=LT.indexOf(e.key.toUpperCase());return v!==null&&v<n?v:null}
+
+function startMC(k){
+  const sec=SECTIONS[k],items=ITEMS[sec.id];
+  S.resp[sec.id]=items.map(()=>({ans:null,ms:0,flag:false}));
+  S.cur={k,i:0,end:Date.now()+sec.time*1000,shown:Date.now(),t0:Date.now()};
+  startTimer(S.cur.end,()=>finishMC(true));
+  drawMC();
+}
+function drawMC(){
+  const{k,i}=S.cur,sec=SECTIONS[k],items=ITEMS[sec.id],it=items[i],R=S.resp[sec.id],r=R[i];
+  app().innerHTML=`<div class="testwrap">
+   <div class="progressline"><i style="width:${(partNo(k)+(i/items.length))/activeList().length*100}%"></i></div>
+   <div class="pills">${items.map((_,n)=>`<button class="pill ${R[n].ans!==null?'ans':''} ${n===i?'cur':''} ${R[n].flag?'flag':''}" data-n="${n}" aria-label="Item ${n+1}">${n+1}</button>`).join('')}</div>
+   <p class="small muted" style="margin:0 0 6px">Item ${i+1} of ${items.length}</p>
+   <p class="qprompt">${it.prompt}</p>${it.stem?`<div class="stem">${it.stem}</div>`:''}${optsHtml(it,r.ans)}
+   <div class="qnav"><div style="display:flex;gap:8px"><button class="btn ghost sm" id="prev" ${i===0?'disabled':''}>← Back</button><button class="btn ghost sm" id="flg">${r.flag?'Unflag':'Flag for review'}</button></div>
+   <div style="display:flex;gap:8px">${i<items.length-1?`<button class="btn primary" id="nxt">${r.ans===null?'Skip':'Next'} →</button>`:''}<button class="btn ${i===items.length-1?'primary':'ghost'}" id="fin">Finish section</button></div></div></div>`;
+  app().querySelectorAll('.opt').forEach(b=>b.onclick=()=>{r.ans=+b.dataset.j;drawMC()});
+  app().querySelectorAll('.pill').forEach(b=>b.onclick=()=>moveMC(+b.dataset.n));
+  const q=id=>document.getElementById(id);
+  q('prev').onclick=()=>moveMC(i-1);q('flg').onclick=()=>{r.flag=!r.flag;drawMC()};
+  if(q('nxt'))q('nxt').onclick=()=>moveMC(i+1);
+  q('fin').onclick=()=>{const un=R.filter(x=>x.ans===null).length,fl=R.filter(x=>x.flag).length;
+    if(un||fl)modal(`<h3>Finish this section?</h3><p class="muted">${un?`${un} item${un>1?'s are':' is'} unanswered. `:''}${fl?`${fl} flagged for review. `:''}You can't return to this section afterwards.</p>`,[['Go back',null],['Finish section',1]],b=>{if(b===1)finishMC(false)});else finishMC(false)};
+  KEY=e=>{const n=keyIdx(e,it.opts.length);if(n!==null){r.ans=n;drawMC()}else if(e.key==='Enter'){i<items.length-1?moveMC(i+1):q('fin').click()}else if(e.key==='ArrowRight'&&i<items.length-1)moveMC(i+1);else if(e.key==='ArrowLeft'&&i>0)moveMC(i-1)};
+}
+function moveMC(n){const{k,i}=S.cur;const sec=SECTIONS[k];const R=S.resp[sec.id];R[i].ms+=Date.now()-S.cur.shown;S.cur.i=clamp(n,0,R.length-1);S.cur.shown=Date.now();drawMC();window.scrollTo(0,0)}
+function finishMC(timeout){
+  stopTimer();KEY=null;const{k,i}=S.cur,sec=SECTIONS[k];const R=S.resp[sec.id];R[i].ms+=Date.now()-S.cur.shown;
+  R.forEach((x,n)=>x.correct=x.ans===ITEMS[sec.id][n].a);
+  S.secTime[sec.id]=Date.now()-S.cur.t0;
+  document.querySelectorAll('.modal-bg').forEach(m=>m.remove());
+  if(timeout)toast('Time is up for this section.');
+  next(k);
+}
+const skipped=k=>S&&S.skipVerbal&&SECTIONS[k].id==='verbal';
+function firstFrom(k){while(k<SECTIONS.length&&skipped(k))k++;return k}
+const activeList=()=>SECTIONS.map((_,k)=>k).filter(k=>!skipped(k));
+const partNo=k=>activeList().indexOf(k);
+function next(k){const n=firstFrom(k+1);n<SECTIONS.length?sectionIntro(n):finishTest()}
+
+/* ---- digit span ---- */
+function digitSeq(L){const r=rng(31337+(S.seq++)*977);const o=[];while(o.length<L){const d=Math.floor(r()*9)+1;if(d!==o[o.length-1]&&!o.includes(d)||o.length>=9)o.push(d)}return o}
+function wmTrialUI(seq,dir,label){
+  return new Promise(async res=>{
+    KEY=null;
+    app().innerHTML=`<div class="testwrap" style="text-align:center"><p class="eyebrow">${label}</p><p class="muted">Watch carefully · ${seq.length} digits</p><div class="bigdigit" id="dg">·</div></div>`;
+    const dg=document.getElementById('dg');await sleep(900);
+    for(const d of seq){dg.textContent=d;await sleep(850);dg.textContent='';await sleep(200)}
+    app().innerHTML=`<div class="testwrap" style="text-align:center;max-width:460px"><p class="eyebrow">${label}</p>
+      <h2>${dir==='fwd'?'Type the digits in the same order':'Type the digits in <u>reverse</u> order'}</h2>
+      <input class="f" id="wa" inputmode="numeric" autocomplete="off" style="font-size:1.8rem;text-align:center;letter-spacing:.3em" maxlength="12">
+      <button class="btn primary" id="ws" style="width:100%;margin-top:14px">Submit</button></div>`;
+    const inp=document.getElementById('wa');inp.focus();
+    const submit=()=>{const v=inp.value.replace(/\D/g,'');const target=(dir==='fwd'?seq:seq.slice().reverse()).join('');res({resp:v,ok:v===target,target})};
+    document.getElementById('ws').onclick=submit;inp.onkeydown=e=>{if(e.key==='Enter')submit()};
+  });
+}
+async function wmIntro(k){
+  S.cur={k,t0:Date.now()};
+  for(const dir of['fwd','bwd']){
+    const label=dir==='fwd'?'Part A · Forward':'Part B · Backward';
+    await new Promise(r=>{app().innerHTML=`<div class="testwrap"><div class="eyebrow">${label}</div><h2>${dir==='fwd'?'Repeat the digits in the same order':'Repeat the digits in reverse order'}</h2><p>${dir==='fwd'?'If you see 3 · 8 · 2, type <b>382</b>.':'If you see 3 · 8 · 2, type <b>283</b>.'} First, one practice trial.</p><button class="btn primary" id="b">Start practice</button></div>`;document.getElementById('b').onclick=r});
+    const p=await wmTrialUI(dir==='fwd'?[4,7,1]:[6,2,9],dir,'Practice');
+    await new Promise(r=>{app().innerHTML=`<div class="testwrap"><div class="feedback ${p.ok?'ok':'no'}">${p.ok?'Correct.':'The correct answer was '+p.target+'.'}</div><p style="margin-top:16px">Now the scored trials. Sequences start ${dir==='fwd'?'at 3 digits':'at 2 digits'} and grow by one.</p><button class="btn primary" id="b">Begin ${label}</button></div>`;document.getElementById('b').onclick=r});
+    const lens=dir==='fwd'?[3,4,5,6,7,8,9]:[2,3,4,5,6,7,8];
+    for(const L of lens){let fails=0;
+      for(let t=0;t<2;t++){const seq=digitSeq(L);const res=await wmTrialUI(seq,dir,`${label} · ${L} digits · trial ${t+1}`);S.wm[dir].push({len:L,seq:seq.join(''),resp:res.resp,ok:res.ok});if(!res.ok)fails++}
+      if(fails===2)break;
+    }
+  }
+  S.secTime.wm=Date.now()-S.cur.t0;next(k);
+}
+
+/* ---- symbol search ---- */
+function glyph(i){
+  const base=Math.floor(i/5),mark=i%5;let b='';
+  if(base===0)b='<circle cx="20" cy="20" r="15"/>';else if(base===1)b='<rect x="5" y="5" width="30" height="30" rx="2"/>';else b='<polygon points="20,4 36,34 4,34"/>';
+  const cy=base===2?24:20;
+  const m=[`<path d="M20 ${cy-7}v14M13 ${cy}h14"/>`,`<path d="M15 ${cy-5}l10 10M25 ${cy-5}l-10 10"/>`,`<circle cx="20" cy="${cy}" r="3.2" fill="#14213d"/>`,`<path d="M13 ${cy}h14"/>`,`<path d="M20 ${cy-7}v14"/>`][mark];
+  return`<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#14213d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${b}${m}</g></svg>`;
+}
+function psTrial(r){const pool=shuffle([...Array(15).keys()],r);const t=pool.slice(0,2);const s=pool.slice(2,7);const yes=r()<.5;if(yes)s[Math.floor(r()*5)]=t[Math.floor(r()*2)];return{t,s,yes}}
+function psUI(tr,onAns){
+  const row=`<div class="ps-row">${tr.t.map(glyph).join('')}<span class="ps-sep"></span>${tr.s.map(glyph).join('')}</div>`;
+  return row+`<div class="ps-btns"><button class="btn ghost" id="py">Yes <span class="kbd">Y</span></button><button class="btn ghost" id="pn">No <span class="kbd">N</span></button></div>`;
+}
+function psPractice(k){
+  const r=rng(555);let n=0;
+  const step=(fb)=>{
+    if(n>=3){app().innerHTML=`<div class="testwrap"><div class="feedback ok">Practice complete.</div><p style="margin-top:14px">The real task lasts 2 minutes. Work as quickly as you can without guessing.</p><button class="btn primary" id="b">Start 2-minute task</button></div>`;document.getElementById('b').onclick=()=>psRun(k);KEY=e=>{if(e.key==='Enter')psRun(k)};return}
+    const tr=psTrial(r);
+    app().innerHTML=`<div class="testwrap"><div class="eyebrow">Practice ${n+1} of 3</div><p class="qprompt">Does either symbol on the left appear on the right?</p>${psUI(tr)}<div>${fb||''}</div></div>`;
+    const ans=v=>{n++;step(`<div class="feedback ${v===tr.yes?'ok':'no'}">${v===tr.yes?'Correct.':'Not quite: the answer was '+(tr.yes?'Yes':'No')+'.'}</div>`)};
+    document.getElementById('py').onclick=()=>ans(true);document.getElementById('pn').onclick=()=>ans(false);
+    KEY=e=>{const v=psKey(e);if(v!==null)ans(v)};
+  };
+  step();
+}
+function psKey(e){const k=e.key.toLowerCase();if(k==='y'||k==='arrowleft')return true;if(k==='n'||k==='arrowright')return false;return null}
+function psRun(k){
+  const r=rng(8080),end=Date.now()+120000;S.cur={k,t0:Date.now()};let tr,shown;let over=false;
+  const finish=()=>{if(over)return;over=true;stopTimer();KEY=null;S.secTime.ps=Date.now()-S.cur.t0;next(k)};
+  startTimer(end,finish);
+  const step=()=>{if(over)return;tr=psTrial(r);shown=Date.now();
+    app().innerHTML=`<div class="testwrap"><p class="qprompt" style="text-align:center">Does either symbol on the left appear on the right?</p>${psUI(tr)}<p class="small muted" style="text-align:center;margin-top:18px">Answered: ${S.ps.trials.length}</p></div>`;
+    document.getElementById('py').onclick=()=>ans(true);document.getElementById('pn').onclick=()=>ans(false)};
+  const ans=v=>{if(over)return;const ok=v===tr.yes;S.ps.trials.push({ok,ms:Date.now()-shown});ok?S.ps.correct++:S.ps.errors++;step()};
+  KEY=e=>{const v=psKey(e);if(v!==null){e.preventDefault();ans(v)}};
+  step();
+}
+
+/* ========= scoring ========= */
+function ncdf(z){const t=1/(1+.2316419*Math.abs(z));const d=.3989423*Math.exp(-z*z/2);let p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p}
+function classify(s){return s>=130?'Extremely High':s>=120?'Very High':s>=110?'High Average':s>=90?'Average':s>=80?'Low Average':s>=70?'Very Low':'Extremely Low'}
+function pctl(s){const p=ncdf((s-100)/15)*100;return p>99.5?'>99':p<0.5?'<1':(p<1?p.toFixed(1):Math.round(p)).toString()}
+function compute(){
+  const sv=!!S.skipVerbal,MCIDS=['verbal','matrix','series','rotation'].filter(id=>!(sv&&id==='verbal'));
+  const raw={};MCIDS.forEach(id=>raw[id]=S.resp[id].filter(x=>x.correct).length);
+  raw.wm=S.wm.fwd.filter(t=>t.ok).length+S.wm.bwd.filter(t=>t.ok).length;
+  raw.ps=Math.max(0,S.ps.correct-S.ps.errors);
+  const z={},scaled={};Object.keys(raw).forEach(k=>{z[k]=(raw[k]-NORMS[k].m)/NORMS[k].sd;scaled[k]=clamp(Math.round(10+3*z[k]),1,19)});
+  const comp=(keys,r)=>{const n=keys.length;return keys.reduce((a,k)=>a+z[k],0)/Math.sqrt(n+n*(n-1)*r)};
+  const zs={FRI:comp(['matrix','series'],.6),VSI:comp(['rotation'],0),WMI:comp(['wm'],0),PSI:comp(['ps'],0),
+    NVI:comp(['matrix','series','rotation','wm','ps'],.45),CPI:comp(['wm','ps'],.4)};
+  if(!sv)Object.assign(zs,{VCI:comp(['verbal'],0),FSIQ:comp(['verbal','matrix','series','rotation','wm','ps'],.45),GAI:comp(['verbal','matrix','series','rotation'],.5)});
+  const idx={};Object.keys(zs).forEach(k=>{const sc=clamp(Math.round(100+15*zs[k]),50,150);const ci=Math.round(1.96*15*Math.sqrt(1-REL[k]));idx[k]={score:sc,lo:clamp(sc-ci,40,160),hi:clamp(sc+ci,40,160),pct:pctl(sc),cls:classify(sc)}});
+  const mc=MCIDS.flatMap(id=>S.resp[id]);
+  const answered=mc.filter(x=>x.ans!==null);const rapid=answered.filter(x=>x.ms<1500).length;
+  const flags=[];
+  if(S.flags.tab>0)flags.push(`The browser tab was hidden ${S.flags.tab} time${S.flags.tab>1?'s':''} during testing.`);
+  if(answered.length&&rapid/answered.length>.15)flags.push(`${rapid} reasoning items (${Math.round(rapid/answered.length*100)}%) were answered in under 1.5 seconds, which suggests guessing.`);
+  const omit=mc.length-answered.length;if(omit/mc.length>.2)flags.push(`${omit} of ${mc.length} reasoning items were left unanswered.`);
+  const psTot=S.ps.correct+S.ps.errors;if(psTot&&S.ps.errors/psTot>.2)flags.push(`Symbol Search accuracy was ${Math.round(S.ps.correct/psTot*100)}%, below the expected range for careful responding.`);
+  if(S.user.lang==='no'&&!sv)flags.push('English is not the examinee’s first language, which can lower Verbal Comprehension scores independently of reasoning ability.');
+  const review={};MCIDS.forEach(id=>review[id]=S.resp[id].map((x,n)=>({ans:x.ans,key:ITEMS[id][n].a,ok:x.correct,ms:x.ms})));
+  return{id:'MCA-'+Date.now().toString(36).toUpperCase(),date:new Date().toISOString(),user:S.user,skipVerbal:sv,raw,scaled,idx,flags,
+    valid:flags.filter(f=>!f.startsWith('English')).length===0,secTime:S.secTime,review,wm:S.wm,ps:{correct:S.ps.correct,errors:S.ps.errors},total:Date.now()-S.started};
+}
+function finishTest(){
+  S.active=false;stopTimer();KEY=null;const res=compute();
+  const hist=store('meridian_results')||[];hist.unshift(res);store('meridian_results',hist.slice(0,20));
+  S=null;VIEW='report';navHeader();renderReport(res);window.scrollTo(0,0);
+}
+
+/* ========= report ========= */
+function bell(score){
+  const W=640,H=200,x=v=>20+(v-40)/120*(W-40),y=d=>H-30-d*(H-50)/0.0266;
+  let p='',a='';for(let v=40;v<=160;v+=1){const d=Math.exp(-(((v-100)/15)**2)/2)/(15*Math.sqrt(2*Math.PI));p+=(v===40?'M':'L')+x(v).toFixed(1)+','+y(d).toFixed(1);if(v<=score)a+=(v===40?'M':'L')+x(v).toFixed(1)+','+y(d).toFixed(1)}
+  a+=`L${x(score).toFixed(1)},${y(0)}L${x(40)},${y(0)}Z`;
+  const ticks=[55,70,85,100,115,130,145].map(v=>`<line x1="${x(v)}" x2="${x(v)}" y1="${y(0)}" y2="${y(0)+5}" stroke="#6b7385"/><text x="${x(v)}" y="${y(0)+19}" text-anchor="middle" font-size="11" fill="#6b7385">${v}</text>`).join('');
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Normal distribution with score ${score} marked"><path d="${a}" fill="#cfe7e3"/><path d="${p}" fill="none" stroke="#14213d" stroke-width="2"/><line x1="20" x2="${W-20}" y1="${y(0)}" y2="${y(0)}" stroke="#9aa3b2"/>${ticks}
+  <line x1="${x(score)}" x2="${x(score)}" y1="14" y2="${y(0)}" stroke="#0f766e" stroke-width="2.5"/><text x="${x(score)}" y="11" text-anchor="middle" font-size="12" font-weight="700" fill="#0f766e">You · ${score}</text></svg>`;
+}
+function profile(res){
+  const keys=idxKeys(res);const W=640,H=300,pl=44,pr=16,pt=24,pb=46;const y=v=>pt+(150-v)/100*(H-pt-pb);const xs=k=>pl+(k+.5)*(W-pl-pr)/keys.length;
+  let g=`<rect x="${pl}" y="${y(110)}" width="${W-pl-pr}" height="${y(90)-y(110)}" fill="#efece4"/>`;
+  [50,70,85,100,115,130,150].forEach(v=>g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="${v===100?'#9aa3b2':'#e4e1d8'}" ${v===100?'':'stroke-dasharray="3 4"'}/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7385">${v}</text>`);
+  let pts='';keys.forEach((k,i)=>{const d=res.idx[k];pts+=(i?'L':'M')+xs(i)+','+y(d.score)});
+  g+=`<path d="${pts}" fill="none" stroke="#14213d" stroke-width="1.5" opacity=".35"/>`;
+  keys.forEach((k,i)=>{const d=res.idx[k];g+=`<line x1="${xs(i)}" x2="${xs(i)}" y1="${y(Math.min(150,d.hi))}" y2="${y(Math.max(50,d.lo))}" stroke="#0f766e" stroke-width="3" stroke-linecap="round" opacity=".45"/><circle cx="${xs(i)}" cy="${y(d.score)}" r="7" fill="#0f766e" stroke="#fff" stroke-width="2"/><text x="${xs(i)}" y="${y(d.score)-13}" text-anchor="middle" font-size="13" font-weight="700" fill="#14213d">${d.score}</text><text x="${xs(i)}" y="${H-24}" text-anchor="middle" font-size="12" font-weight="700" fill="#14213d">${k}</text><text x="${xs(i)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#6b7385">${INDEX_INFO[k].name}</text>`});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Index score profile">${g}</svg>`;
+}
+const headKey=res=>res.idx.FSIQ?'FSIQ':'NVI';
+const idxKeys=res=>['VCI','FRI','VSI','WMI','PSI'].filter(k=>res.idx[k]);
+function narrative(res){
+  const nm=res.user.name||'The examinee';const H=headKey(res),f=res.idx[H];const out=[];
+  out.push(`${nm}'s estimated ${INDEX_INFO[H].name} is <b>${f.score}</b> (95% confidence interval ${f.lo}–${f.hi}), in the <b>${f.cls}</b> range. This is higher than about ${f.pct}% of the reference population. Allowing for measurement error, the true score most likely falls somewhere in the ${classify(f.lo)===classify(f.hi)?classify(f.lo):classify(f.lo)+' to '+classify(f.hi)} range.`);
+  if(H==='NVI')out.push('This is the language-free version of the assessment. The Verbal Reasoning section was skipped so that English proficiency would not affect the result, which is the same approach psychologists take with a Nonverbal Index.');
+  const keys=idxKeys(res);const mean=keys.reduce((a,k)=>a+res.idx[k].score,0)/keys.length;
+  const st=keys.filter(k=>res.idx[k].score-mean>=12),wk=keys.filter(k=>res.idx[k].score-mean<=-12);
+  const spread=Math.max(...keys.map(k=>res.idx[k].score))-Math.min(...keys.map(k=>res.idx[k].score));
+  if(spread>=23)out.push(`The index scores vary by ${spread} points. When abilities are this uneven, the overall score summarises the profile less well, and the individual index scores are more informative.`);
+  else out.push(`The ${keys.length} index scores are fairly even, so the overall score is a reasonable summary of ability.`);
+  if(st.length)out.push(`Relative strength${st.length>1?'s':''}: ${st.map(k=>`<b>${INDEX_INFO[k].name}</b> (${res.idx[k].score})`).join(', ')}. ${st.map(k=>INDEX_INFO[k].desc).join(' ')}`);
+  if(wk.length)out.push(`Relative weakness${wk.length>1?'es':''}: ${wk.map(k=>`<b>${INDEX_INFO[k].name}</b> (${res.idx[k].score})`).join(', ')}. These are weaknesses compared with the examinee's own average, not necessarily compared with other people.`);
+  const d=res.idx.GAI?res.idx.GAI.score-res.idx.CPI.score:0;
+  if(Math.abs(d)>=15)out.push(`The General Ability Index (${res.idx.GAI.score}) is ${d>0?'higher':'lower'} than the Cognitive Proficiency Index (${res.idx.CPI.score}) by ${Math.abs(d)} points. ${d>0?'Reasoning ability is stronger than the speed and working-memory skills that support everyday efficiency. This pattern is common with fatigue, anxiety, attention difficulties or unfamiliarity with timed tasks.':'Processing efficiency is a relative asset compared with reasoning on complex material.'}`);
+  return out.map(p=>`<p>${p}</p>`).join('');
+}
+function renderReport(res){
+  const I=res.idx;const dt=new Date(res.date);const H=headKey(res);
+  const sub=[['verbal','Verbal Reasoning','VCI'],['matrix','Matrix Reasoning','FRI'],['series','Number & Letter Series','FRI'],['rotation','Spatial Rotation','VSI'],['wm','Digit Span','WMI'],['ps','Symbol Search','PSI']].filter(x=>res.raw[x[0]]!==undefined);
+  const inIframe=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+  app().innerHTML=`<div class="rep">
+  <div class="rep-head"><div><div class="eyebrow">Score report</div><h1 style="font-size:2.3rem;margin-bottom:6px">Cognitive Ability Profile</h1>
+    <span class="badge ${res.valid?'v':'c'}">${res.valid?'Valid administration':'Interpret with caution'}</span></div>
+    <dl class="meta"><dt>Examinee</dt><dd>${esc(res.user.name||'Anonymous')}</dd><dt>Age</dt><dd>${res.user.age}</dd><dt>Date</dt><dd>${dt.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}</dd><dt>Duration</dt><dd>${fmtT(res.total)}</dd><dt>Report ID</dt><dd>${res.id}</dd></dl></div>
+  <div class="noprint" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap"><button class="btn primary sm" id="prt">Print / save as PDF</button><button class="btn ghost sm" id="cpy">Copy summary</button><button class="btn ghost sm" onclick="go('history')">All results</button>${inIframe?'<span class="small muted" style="align-self:center">Printing works when the site is opened directly or self-hosted.</span>':''}</div>
+
+  <div class="card score-hero"><div><div class="small muted" style="font-weight:600">${INDEX_INFO[H].name} (estimate)</div><div class="fsiq">${I[H].score}</div><span class="cls">${I[H].cls}</span>
+    <p class="small" style="margin:12px 0 0">95% CI <b>${I[H].lo}–${I[H].hi}</b> · Percentile <b>${I[H].pct}</b></p>${H==='NVI'?'<p class="small muted" style="margin:6px 0 0">Language-free version: Verbal Reasoning skipped.</p>':''}</div>
+    <div class="chart">${bell(I[H].score)}</div></div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Interpretation</h3>${narrative(res)}</div>
+    <div class="card"><h3>Composite scores</h3><table class="t"><tr><th>Composite</th><th>Score</th><th>95% CI</th><th>%ile</th></tr>
+    ${['FSIQ','NVI','GAI','CPI'].filter(k=>I[k]).map(k=>`<tr><td>${INDEX_INFO[k].name}<div class="small muted">${INDEX_INFO[k].desc}</div></td><td class="n"><b>${I[k].score}</b></td><td class="n">${I[k].lo}–${I[k].hi}</td><td class="n">${I[k].pct}</td></tr>`).join('')}</table></div>
+  </div>
+
+  <div class="card pb" style="margin-top:16px"><h3>Index score profile</h3><p class="small muted">Dots are standard scores; bars show 95% confidence intervals. The shaded band is the Average range (90–109).</p><div class="chart">${profile(res)}</div>
+  <div style="overflow-x:auto"><table class="t" style="margin-top:10px"><tr><th>Index</th><th>Score</th><th>95% CI</th><th>Percentile</th><th>Descriptor</th></tr>
+  ${idxKeys(res).map(k=>`<tr><td><b>${k}</b> · ${INDEX_INFO[k].name}<div class="small muted">${INDEX_INFO[k].desc}</div></td><td class="n"><b>${I[k].score}</b></td><td class="n">${I[k].lo}–${I[k].hi}</td><td class="n">${I[k].pct}</td><td>${I[k].cls}</td></tr>`).join('')}</table></div></div>
+
+  <div class="grid g2" style="margin-top:16px">
+  <div class="card"><h3>Subtest scores</h3><div style="overflow-x:auto"><table class="t"><tr><th>Subtest</th><th>Index</th><th>Raw</th><th>Scaled</th><th>Time</th></tr>
+  ${sub.map(([id,n,ix])=>`<tr><td>${n}</td><td>${ix}</td><td class="n">${res.raw[id]}${NORMS[id].n?' / '+NORMS[id].n:''}</td><td class="n"><b>${res.scaled[id]}</b></td><td class="n">${res.secTime[id]?fmtT(res.secTime[id]):'–'}</td></tr>`).join('')}</table></div>
+  <p class="small muted" style="margin:10px 0 0">Scaled scores: mean 10, SD 3 (range 1–19). Symbol Search raw = correct (${res.ps.correct}) minus errors (${res.ps.errors}). Digit Span: ${res.wm.fwd.filter(t=>t.ok).length} forward + ${res.wm.bwd.filter(t=>t.ok).length} backward trials correct; longest forward span ${Math.max(0,...res.wm.fwd.filter(t=>t.ok).map(t=>t.len))}, backward ${Math.max(0,...res.wm.bwd.filter(t=>t.ok).map(t=>t.len))}.</p></div>
+  <div class="card"><h3>Validity &amp; test-taking behaviour</h3>${res.flags.length?`<ul class="flags">${res.flags.map(f=>`<li>${f}</li>`).join('')}</ul>`:'<p>No validity concerns detected: no tab switching, no pattern of rapid guessing, and few omissions.</p>'}
+  <p class="small muted" style="margin:0">Online, unproctored testing cannot fully confirm effort or rule out outside help.</p></div></div>
+
+  <div class="card" style="margin-top:16px"><h3>Recommendations</h3><ul>
+  <li>Use this report as a self-insight estimate. Scores within each confidence interval are statistically equivalent.</li>
+  <li>If results will inform a clinical, educational or legal decision (e.g. learning difficulties, giftedness programmes, disability accommodations), arrange a comprehensive assessment with a licensed psychologist using an individually administered, nationally normed test such as WAIS-5 or Stanford-Binet 5.</li>
+  ${!res.valid?'<li>Because validity concerns were noted, consider retesting in better conditions. Allow at least six months so practice effects are smaller.</li>':'<li>Retaking soon inflates scores through practice effects. If you retest, wait at least six months.</li>'}
+  </ul></div>
+
+  <h2 class="section-title pb">Item-level review</h2>
+  ${Object.keys(res.review).map(id=>{const sec=SECTIONS.find(s=>s.id===id);const R=res.review[id];return`<details class="rev"><summary><span>${sec.name}</span><span class="muted">${R.filter(x=>x.ok).length} / ${R.length} correct</span></summary><div class="in"><table class="t"><tr><th>#</th><th>Your answer</th><th>Correct</th><th>Result</th><th>Time</th></tr>${R.map((x,n)=>`<tr><td>${n+1}</td><td>${x.ans===null?'<span class="muted">–</span>':LT[x.ans]}${id==='verbal'||id==='series'?(x.ans!==null?' · '+ITEMS[id][n].opts[x.ans]:''):''}</td><td>${LT[x.key]}${id==='verbal'||id==='series'?' · '+ITEMS[id][n].opts[x.key]:''}</td><td class="${x.ok?'ok-t':'no-t'}">${x.ok?'Correct':x.ans===null?'Omitted':'Incorrect'}</td><td class="n">${(x.ms/1000).toFixed(1)}s</td></tr>`).join('')}</table></div></details>`}).join('')}
+  <details class="rev"><summary><span>Digit Span trials</span><span class="muted">${res.raw.wm} / 28</span></summary><div class="in"><table class="t"><tr><th>Part</th><th>Length</th><th>Shown</th><th>Response</th><th>Result</th></tr>${['fwd','bwd'].flatMap(d=>res.wm[d].map(t=>`<tr><td>${d==='fwd'?'Forward':'Backward'}</td><td>${t.len}</td><td>${t.seq}</td><td>${t.resp||'–'}</td><td class="${t.ok?'ok-t':'no-t'}">${t.ok?'Correct':'Incorrect'}</td></tr>`)).join('')}</table></div></details>
+
+  <div class="note" style="margin-top:24px"><b>About these scores.</b> Meridian is an educational screening instrument. Its scores come from provisional reference parameters rather than a stratified national standardisation sample. They are not adjusted for age and are not a clinical measurement of intelligence. Do not use them as the only basis for diagnosis, placement, employment or legal decisions.</div>
+  </div>`;
+  document.getElementById('prt').onclick=()=>{document.querySelectorAll('details.rev').forEach(d=>d.open=true);try{window.print()}catch(e){toast('Printing is blocked here. Open the site directly to print.')}};
+  document.getElementById('cpy').onclick=()=>{const t=summaryText(res);try{navigator.clipboard.writeText(t).then(()=>toast('Summary copied'),()=>toast('Copy was blocked by the browser'))}catch(e){toast('Copy was blocked by the browser')}};
+}
+function summaryText(res){const I=res.idx;return`Meridian Cognitive Assessment · ${res.id}
+Examinee: ${res.user.name||'Anonymous'} (age ${res.user.age}) · ${new Date(res.date).toLocaleDateString()}
+${INDEX_INFO[headKey(res)].name}: ${I[headKey(res)].score} (95% CI ${I[headKey(res)].lo}-${I[headKey(res)].hi}), ${I[headKey(res)].pct}th percentile, ${I[headKey(res)].cls}${res.skipVerbal?' (language-free version)':''}
+${I.GAI?'General Ability Index: '+I.GAI.score+' · ':''}${I.NVI&&I.FSIQ?'Nonverbal IQ: '+I.NVI.score+' · ':''}Cognitive Proficiency Index: ${I.CPI.score}
+${idxKeys(res).map(k=>`${k} ${INDEX_INFO[k].name}: ${I[k].score} (${I[k].lo}-${I[k].hi})`).join('\n')}
+Validity: ${res.valid?'no concerns detected':'interpret with caution'}
+Educational estimate only; not a clinical assessment.`}
+
+/* ========= history ========= */
+function renderHistory(){
+  const h=store('meridian_results')||[];
+  app().innerHTML=`<div class="eyebrow">Saved on this device</div><h1 style="font-size:2.2rem">My results</h1>
+  ${h.length?`<div class="card" style="overflow-x:auto"><table class="t"><tr><th>Date</th><th>Name</th><th>Overall IQ</th><th>Version</th><th>CPI</th><th>Validity</th><th></th></tr>
+  ${h.map((r,i)=>`<tr><td>${new Date(r.date).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})}</td><td>${esc(r.user.name||'Anonymous')}</td><td class="n"><b>${(r.idx.FSIQ||r.idx.NVI).score}</b></td><td>${r.idx.FSIQ?'Full':'Language-free'}</td><td class="n">${r.idx.CPI.score}</td><td><span class="badge ${r.valid?'v':'c'}">${r.valid?'Valid':'Caution'}</span></td><td><button class="btn ghost sm" data-i="${i}">View report</button></td></tr>`).join('')}</table></div>
+  <p class="small muted" style="margin-top:12px">Results are stored only in this browser. Clearing site data removes them. <a href="#" id="clr">Delete all results</a></p>`
+  :`<div class="card"><p>No results on this device yet.</p><button class="btn primary" onclick="go('intake')">Take the assessment</button></div>`}`;
+  app().querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{VIEW='report';navHeader();renderReport(h[+b.dataset.i]);window.scrollTo(0,0)});
+  const c=document.getElementById('clr');if(c)c.onclick=e=>{e.preventDefault();modal('<h3>Delete all saved results?</h3><p class="muted">This cannot be undone.</p>',[['Cancel',null],['Delete','danger']],b=>{if(b===1){store('meridian_results',[]);renderHistory()}})};
+}
+
+navHeader();renderHome();
+</script>
+</body>
+</html>
